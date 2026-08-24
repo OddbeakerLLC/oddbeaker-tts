@@ -1,0 +1,16 @@
+{
+    "engine": "kokoro",
+    "default_voice": "af_heart",
+    "cache_enabled": true,
+    "cache_max_mb": 200,
+    "voices": [
+        {"id": "af_heart",     "label": "Heart",    "gender": "female", "accent": "american"},
+        {"id": "af_bella",     "label": "Bella",    "gender": "female", "accent": "american"},
+        {"id": "am_adam",      "label": "Adam",     "gender": "male",   "accent": "american"},
+        {"id": "am_michael",   "label": "Michael",  "gender": "male",   "accent": "american"},
+        {"id": "bf_emma",      "label": "Emma",     "gender": "female", "accent": "british"},
+        {"id": "bf_isabella",  "label": "Isabella", "gender": "female", "accent": "british"},
+        {"id": "bm_george",    "label": "George",   "gender": "male",   "accent": "british"},
+        {"id": "bm_daniel",    "label": "Daniel",   "gender": "male",   "accent": "british"}
+    ]
+}
