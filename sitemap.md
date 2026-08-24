@@ -36,5 +36,4 @@ oddbeaker-tts/                 # git root (standalone)
 - GitHub `origin` not configured yet.
 
 ## Remote
-- `origin`: **unset** — ask hub/operator for GitHub URL, then:
-  `git remote add origin <url> && git push -u origin master`
+- `origin`: `ssh://git@github.com/OddbeakerLLC/oddbeaker-tts.git` (branch `master`)
