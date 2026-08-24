@@ -22,3 +22,7 @@ var/
 .idea/
 .vscode/
 *.swp
+
+# Local agent ops (not for public tree)
+.agent/
+sitemap.md
