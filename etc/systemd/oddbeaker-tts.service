@@ -1,0 +1,28 @@
+# Example systemd unit for oddbeaker-tts
+# Copy/adapt paths, user, and venv for the host product (Jobe, BizAgent, etc.).
+#
+# Environment knobs:
+#   ODDBEAKER_TTS_CONFIG     path to tts.json
+#   ODDBEAKER_TTS_CACHE_DIR  WAV cache directory
+#   ODDBEAKER_TTS_HOST / ODDBEAKER_TTS_PORT
+
+[Unit]
+Description=Oddbeaker TTS Service (Kokoro)
+After=network.target
+
+[Service]
+Type=simple
+User=CHANGE_ME
+WorkingDirectory=/opt/oddbeaker-tts
+ExecStart=/opt/oddbeaker-tts/.venv/bin/oddbeaker-tts --host 127.0.0.1 --port 9201
+Restart=always
+RestartSec=5
+Environment=HOME=/home/CHANGE_ME
+Environment=PATH=/opt/oddbeaker-tts/.venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+Environment=LANG=C.UTF-8
+Environment=ODDBEAKER_TTS_CONFIG=/opt/oddbeaker-tts/etc/tts.json
+Environment=ODDBEAKER_TTS_CACHE_DIR=/var/cache/oddbeaker-tts
+
+[Install]
+WantedBy=multi-user.target

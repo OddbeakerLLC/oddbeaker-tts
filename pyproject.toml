@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oddbeaker-tts"
+version = "0.1.0"
+description = "Standalone Kokoro TTS toolkit and HTTP service"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Oddbeaker LLC" }]
+keywords = ["tts", "kokoro", "speech", "fastapi", "text-to-speech"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Framework :: FastAPI",
+]
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.0",
+    "numpy>=1.24",
+    "soundfile>=0.12",
+    "huggingface_hub>=0.20",
+    # kokoro + torch are heavy; install via [runtime] (see README)
+]
+
+[project.optional-dependencies]
+runtime = [
+    "kokoro>=0.9.4",
+    "torch",
+]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+oddbeaker-tts = "oddbeaker_tts.service:main"
+ob-tts = "oddbeaker_tts.service:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+oddbeaker_tts = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
