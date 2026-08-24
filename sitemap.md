@@ -26,14 +26,15 @@ oddbeaker-tts/                 # git root (standalone)
 
 ## Active Work
 - Split complete from `oddbeaker-framework` monorepo into this standalone repo.
-- Waiting on operator/hub for public GitHub remote URL (do not invent origin).
+- GitHub default branch `main` has full package tree (merge `8c0a56f`).
 - Package v0.1.0; unit/API tests without model are the CI path.
 
 ## Known Issues
 - Full synthesis needs `[runtime]` extras (`kokoro`, `torch`), spaCy `en_core_web_sm`, and HF Kokoro cache.
 - On ai-trainer, WAV cache is `~/.cache/oddbeaker-tts` until root creates writable `/var/cache/oddbeaker-tts`.
 - Host has no usable NVIDIA device for this process; service runs CPU torch.
-- GitHub `origin` not configured yet.
+- Public GitHub API 404 (private or visibility); SSH remote works.
 
 ## Remote
-- `origin`: `ssh://git@github.com/OddbeakerLLC/oddbeaker-tts.git` (branch `master`)
+- `origin`: `ssh://git@github.com/OddbeakerLLC/oddbeaker-tts.git`
+- Default branch: `main` @ `8c0a56f` (full tree); `master` @ `557cd31` (same content lineage)
