@@ -22,6 +22,7 @@ Use it as a library (preprocess + engine) or run the FastAPI daemon for `POST /s
 
 ```
 oddbeaker-tts/
+  install.sh                   # one-shot installer (Linux + macOS best-effort)
   pyproject.toml
   README.md
   LICENSE
@@ -37,12 +38,74 @@ oddbeaker-tts/
   tests/
 ```
 
-## Install
+## Quick install (recommended)
+
+One script handles clone (or reuse), venv, runtime deps, model cache, config defaults (`127.0.0.1:9201`, voice `af_heart`), a user service, health check, and a sample synthesize smoke test.
+
+**From a clone:**
+
+```bash
+git clone https://github.com/OddbeakerLLC/oddbeaker-tts.git
+cd oddbeaker-tts
+./install.sh
+```
+
+**Curl | bash** (no prior clone):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/OddbeakerLLC/oddbeaker-tts/main/install.sh | bash
+```
+
+Safe to re-run. If something is already healthy on port `9201`, the installer leaves that process alone (it will not kill a live service on another checkout such as a shared host daemon).
+
+### After install — start / stop / status
+
+**Linux (systemd user unit + linger):**
+
+```bash
+systemctl --user start oddbeaker-tts.service
+systemctl --user stop oddbeaker-tts.service
+systemctl --user restart oddbeaker-tts.service
+systemctl --user status oddbeaker-tts.service
+journalctl --user -u oddbeaker-tts.service -f
+# survive logout/reboot:
+loginctl enable-linger "$USER"
+```
+
+**macOS (LaunchAgent, best-effort):** `install.sh` writes `~/Library/LaunchAgents/com.oddbeaker.tts.plist`. Logs under `~/Library/Logs/oddbeaker-tts/`.
+
+**Health / sample request:**
+
+```bash
+curl -sS http://127.0.0.1:9201/health
+curl -sS -H 'Content-Type: application/json' \
+  -d '{"text":"Hello","voice":"af_heart"}' \
+  http://127.0.0.1:9201/synthesize
+```
+
+### Installer options
+
+| Env / flag | Meaning |
+|------------|---------|
+| `ODDBEAKER_TTS_DIR` / `--dir` | Install root (default `~/.local/share/oddbeaker-tts`; in-tree `./install.sh` uses the checkout) |
+| `ODDBEAKER_TTS_SOURCE` / `--source` | Local path or git URL |
+| `ODDBEAKER_TTS_REF` / `--ref` | Git ref when cloning (default `main`) |
+| `ODDBEAKER_TTS_HOST` / `--host` | Bind host (default `127.0.0.1`) |
+| `ODDBEAKER_TTS_PORT` / `--port` | Bind port (default `9201`) |
+| `ODDBEAKER_TTS_VOICE` / `--voice` | Default voice in `etc/tts.json` (default `af_heart`) |
+| `ODDBEAKER_TTS_CACHE_DIR` | WAV cache (default `~/.cache/oddbeaker-tts`) |
+| `--no-start` | Install only; do not start the daemon |
+| `--no-smoke` | Skip synthesize smoke test |
+| `--force-restart` | Bounce **this** tree's managed unit even if healthy (refuses if another WorkingDirectory owns the port) |
+
+Default install layout: code under `ODDBEAKER_TTS_DIR`, user unit `oddbeaker-tts.service`, config `etc/tts.json`.
+
+### Manual / dev install
 
 Lightweight (preprocess + API tests; no model):
 
 ```bash
-git clone <repo-url> oddbeaker-tts
+git clone https://github.com/OddbeakerLLC/oddbeaker-tts.git
 cd oddbeaker-tts
 python3 -m venv .venv
 source .venv/bin/activate
@@ -50,7 +113,7 @@ pip install -e ".[dev]"
 pytest -q
 ```
 
-Full runtime (synthesis):
+Full runtime (synthesis) without the installer:
 
 ```bash
 pip install -e ".[dev,runtime]"
@@ -167,18 +230,17 @@ Default voice: **`af_heart`**.
 
 ## Systemd
 
-See `etc/systemd/oddbeaker-tts.service` (template — set User, paths, and venv).
+`./install.sh` installs a **systemd user unit** (`oddbeaker-tts.service`) and tries `loginctl enable-linger` so the daemon survives logout/reboot.
 
-Example user unit pattern:
+For a hand-rolled system unit, see `etc/systemd/oddbeaker-tts.service` (template — set User, paths, and venv).
 
 ```bash
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 export DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus
 systemctl --user enable --now oddbeaker-tts.service
 journalctl --user -u oddbeaker-tts.service -f
+loginctl enable-linger "$USER"
 ```
-
-`loginctl enable-linger $USER` keeps a user unit alive across logout/reboot.
 
 ## License
 
