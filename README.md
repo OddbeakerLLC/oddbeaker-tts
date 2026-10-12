@@ -210,7 +210,7 @@ Serves cached WAV (`audio/wav`).
 ### `GET /info`
 
 ```json
-{ "name": "kokoro", "model": "Kokoro-82M", "version": "0.9.4", "device": "cuda|cpu", "vram_mb": 0 }
+{ "name": "kokoro", "model": "Kokoro-82M", "version": "0.9.4", "device": "cuda|cpu", "vram_mb": 0, "repo_id": "hexgrad/Kokoro-82M" }
 ```
 
 ## Voices (default catalog)
